@@ -41,4 +41,5 @@ httpd.socket = ssl.wrap_socket(httpd.socket,
                                server_side=True,
                                keyfile='../server.key',
                                certfile='../server.pem',
-                     
+                               ssl_version=ssl.PROTOCOL_TLS)
+httpd.serve_forever()
