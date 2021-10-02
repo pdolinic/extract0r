@@ -15,13 +15,13 @@ import socket
 
 hostname = socket.gethostname()
 local_ip = socket.gethostbyname(hostname)
-print("WAN:")
+print("WAN: ")
 print(os.system("curl ipinfo.io ")) 
 print()
-print ("Local:"+ local_ip )
-print ("Hostname :" + hostname)
+print ("Local: "+ local_ip )
+print ("Hostname: " + hostname)
 print()
-print(" Scriptlink: ")
+print(" Scriptlink: https://bit.ly/3D7OnxS |  https://github.com/pdolinic/Purple/blob/main/webpy.py ")
 print(" Extraction:  curl -k https://localhost:port/filename --output filename ")
 print()
 
