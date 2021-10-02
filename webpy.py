@@ -21,7 +21,7 @@ print()
 print ("Local: "+ local_ip )
 print ("Hostname: " + hostname)
 print()
-print(" Scriptlink: https://bit.ly/3D7OnxS |  https://github.com/pdolinic/Purple/blob/main/webpy.py ")
+print(" Scriptlink: https://bit.ly/3AfM4at |  https://raw.githubusercontent.com/pdolinic/Purple/main/webpy.py")
 print(" Extraction:  curl -k https://localhost:port/filename --output filename ")
 print()
 
