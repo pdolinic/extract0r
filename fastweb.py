@@ -22,10 +22,10 @@ print()
 print ("Local: "+ local_ip )
 print ("Hostname: " + hostname)
 print()
-print(" Scriptlink: https://bit.ly/3AfM4at |  https://raw.githubusercontent.com/pdolinic/Purple/main/webpy.py")
+print(" https://raw.githubusercontent.com/pdolinic/Purple/main/fastweb.py)
 print(" Extraction:  curl -k https://localhost:port/filename --output filename ")
 print()
-print("!! Warning: the Privatekey is in the contained in the Certificate, as this directory is served anyways | >DO NOT USE FOR SECRECY or in PRODUCTION< !!")
+print("!! Warning: the Privatekey is in the contained in the Certificate, and this directory is served anyways | >DO NOT USE FOR SECRECY or in PRODUCTION < !!")
 port = int(input("Port to listen on:"))
 
 certValidityDays=1
