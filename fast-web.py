@@ -17,28 +17,57 @@ import http.server, ssl
 import os
 import socket
 
+
+# functions
+
+def print_network_info():
+    print(f"WAN:\t{os.system('curl ipinfo.io ')}\n") 
+    print(f"Local:\t{local_ip}")
+    print(f"Local Hostname:\t{hostname}\n")
+    print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
+    print("-> Extraction: curl -k https://localhost:port/filename --output filename\n")
+    print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
+
+def get_input(prompt:str, expected_type=str):
+    while True:
+        try:
+            inp = input(prompt)
+            return expected_type(inp)
+        except ValueError:
+            pass
+
+#
+
+
 hostname = socket.gethostname()
 local_ip = socket.gethostbyname(hostname)
 
-print("WAN: ")
-print(os.system("curl ipinfo.io ") + "\n") 
-print ("Local: "+ local_ip )
-print ("Hostname: " + hostname + "\n")
-print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
-print("-> Extraction:  curl -k https://localhost:port/filename --output filename\n")
-print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
 
-srv_addr = str(input("Serveraddress to listen on: "))
-port = int(input("Port to listen on: "))
+if __name__ == "__main__":
 
-os.system("openssl req -new -x509 -keyout '../server.key' -out '../server.pem' -days 365 -nodes -subj '/OU=Unknown/O=Unknown/L=Unknown/ST=unknown/C=AU'")
+    # the following will only be executed when this script
+    # isn't loaded as a module
 
-server_address = (srv_addr, port)
-httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
-httpd.socket = ssl.wrap_socket(httpd.socket,
-                               server_side=True,
-                               keyfile='../server.key',
-                               certfile='../server.pem',
-                               ssl_version=ssl.PROTOCOL_TLS)
+    print_network_info()
 
-httpd.serve_forever()
+    srv_addr = get_input("Serveraddress to listen on: ", str)
+    port = get_input("Port to listen on: ", int)
+
+    os.system("openssl req -new -x509 -keyout '../server.key' -out '../server.pem' -days 365 -nodes -subj '/OU=Unknown/O=Unknown/L=Unknown/ST=unknown/C=AU'")
+
+    server_address = (srv_addr, port)
+    httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
+    httpd.socket = ssl.wrap_socket(
+        httpd.socket,
+        server_side=True,
+        keyfile='../server.key',
+        certfile='../server.pem',
+        ssl_version=ssl.PROTOCOL_TLS
+    )
+
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt as e:
+        print(str(e))
+        print("Stopping.")
+        httpd.shutdown()
