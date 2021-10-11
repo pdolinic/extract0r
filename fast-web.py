@@ -74,5 +74,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt as e:
         print(str(e))
         print("Stopping.")
-    os.system(rm /tmp/server.key /tmp/server.pem)
+    os.system("rm /tmp/server.key /tmp/server.pem")
     httpd.shutdown()
