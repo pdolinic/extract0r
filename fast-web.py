@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # Description: Spawn a fast TLS-Python3 Server with no interaction to get files out
-
 # Educational / Created in less than an hour for personal-needs
 # Author: pdolinic@netways.de, Junior Consultant at NETWAYS Professional Services GmbH. Deutschherrnstr. 15-19 90429 Nuremberg.
 
@@ -17,17 +16,6 @@ import http.server, ssl
 import os
 import socket
 
-
-# functions
-
-def print_network_info():
-    print(f"WAN:\t{os.system('curl ipinfo.io ')}\n") 
-    print(f"Local:\t{local_ip}")
-    print(f"Local Hostname:\t{hostname}\n")
-    print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
-    print("-> Extraction: curl -k https://localhost:port/filename --output filename\n")
-    print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
-
 def get_input(prompt:str, expected_type=str):
     while True:
         try:
@@ -36,12 +24,37 @@ def get_input(prompt:str, expected_type=str):
         except ValueError:
             pass
 
-#
+agreement = get_input("Do you want to install external pip-dependencies? Press y for yes: ", str)
+
+if not "y" in agreement:
+    print("Cancelling pip-depenencies")
+else:
+    os.system("pip3 install ifaddr")
+    import ifaddr
 
 
-hostname = socket.gethostname()
-local_ip = socket.gethostbyname(hostname)
 
+# functions
+def print_network_info():
+    print(f"WAN:\t{os.system('curl ipinfo.io ')}\n") 
+#    print(f"Local:\t{local_ip}")
+#    print(f"Local Hostname:\t{hostname}\n")
+    print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
+    print("-> Extraction: curl -k https://localhost:port/filename --output filename\n")
+    print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
+
+
+
+adapters = ifaddr.get_adapters()
+
+for adapter in adapters:
+    print("IPs of network adapter " + adapter.nice_name)
+    for ip in adapter.ips:
+        print( "   %s/%s" % (ip.ip, ip.network_prefix))
+
+
+#hostname = socket.gethostname()
+#local_ip = socket.gethostbyname(hostname)
 
 if __name__ == "__main__":
 
@@ -53,15 +66,17 @@ if __name__ == "__main__":
     srv_addr = get_input("Serveraddress to listen on: ", str)
     port = get_input("Port to listen on: ", int)
 
-    os.system("openssl req -new -x509 -keyout '../server.key' -out '../server.pem' -days 365 -nodes -subj '/OU=Unknown/O=Unknown/L=Unknown/ST=unknown/C=AU'")
-
+    os.system("openssl req -new -x509 -keyout '/tmp/server.key' -out '/tmp/server.pem' -days 365 -nodes -subj '/OU=Unknown/O=Unknown/L=Unknown/ST=unknown/C=AU'")
+    #set permissions with sticky bit for owner only
+    os.system("chmod 1700 /tmp/server.key /tmp/server.pem")
+   
     server_address = (srv_addr, port)
     httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
     httpd.socket = ssl.wrap_socket(
         httpd.socket,
         server_side=True,
-        keyfile='../server.key',
-        certfile='../server.pem',
+        keyfile='/tmp/server.key',
+        certfile='/tmp/server.pem',
         ssl_version=ssl.PROTOCOL_TLS
     )
 
@@ -70,4 +85,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt as e:
         print(str(e))
         print("Stopping.")
-        httpd.shutdown()
+    os.system(rm /tmp/server.key /tmp/server.pem)
+    httpd.shutdown()
