@@ -24,42 +24,31 @@ def get_input(prompt:str, expected_type=str):
         except ValueError:
             pass
 
-agreement = get_input("Do you want to install external pip-dependencies? Press y for yes: ", str)
+def dependency_check():
+    if not "y" in agreement:
+       # print("Cancelling pip-depenencies")
+         return
+    else:
+         os.system("pip3 install ifaddr")
+         import ifaddr
+         adapters = ifaddr.get_adapters()
+         for adapter in adapters:
+             print("IPs of network adapter " + adapter.nice_name)
+             for ip in adapter.ips:
+                 print( "   %s/%s" % (ip.ip, ip.network_prefix))
 
-if not "y" in agreement:
-    print("Cancelling pip-depenencies")
-else:
-    os.system("pip3 install ifaddr")
-    import ifaddr
-
-
-
-# functions
 def print_network_info():
     print(f"WAN:\t{os.system('curl ipinfo.io ')}\n") 
-#    print(f"Local:\t{local_ip}")
-#    print(f"Local Hostname:\t{hostname}\n")
     print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
     print("-> Extraction: curl -k https://localhost:port/filename --output filename\n")
     print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
-
-
-
-adapters = ifaddr.get_adapters()
-
-for adapter in adapters:
-    print("IPs of network adapter " + adapter.nice_name)
-    for ip in adapter.ips:
-        print( "   %s/%s" % (ip.ip, ip.network_prefix))
-
-
-#hostname = socket.gethostname()
-#local_ip = socket.gethostbyname(hostname)
 
 if __name__ == "__main__":
 
     # the following will only be executed when this script
     # isn't loaded as a module
+    agreement = get_input("Do you want to install external pip-dependencies? Press y for yes: ", str)
+    dependency_check()
 
     print_network_info()
 
