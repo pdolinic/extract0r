@@ -39,7 +39,7 @@ def dependency_check():
                  print( "   %s/%s" % (ip.ip, ip.network_prefix))
 
 def print_network_info():
-    print("WAN:\t{os.system('curl ipinfo.io ')}\n") 
+    print(f"WAN:\t{os.system('curl ipinfo.io ')}\n") 
     print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
     print("-> Extraction: curl -k https://localhost:port/filename --output filename\n")
     print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
