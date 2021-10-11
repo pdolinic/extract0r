@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Description: Spawn a fast TLS-Python3 Server with no interaction to get files out
-# Educational / Created in less than an hour for personal-needs
+# Educational / Python3 Beginner Practice 
 # Author: pdolinic@netways.de, Junior Consultant at NETWAYS Professional Services GmbH. Deutschherrnstr. 15-19 90429 Nuremberg.
 
 # Date 2021-10-01
