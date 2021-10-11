@@ -16,6 +16,7 @@ import http.server, ssl
 import os
 import socket
 
+
 def get_input(prompt:str, expected_type=str):
     while True:
         try:
@@ -38,41 +39,43 @@ def dependency_check():
                  print( "   %s/%s" % (ip.ip, ip.network_prefix))
 
 def print_network_info():
-    print(f"WAN:\t{os.system('curl ipinfo.io ')}\n") 
+    print("WAN:\t{os.system('curl ipinfo.io ')}\n") 
     print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
     print("-> Extraction: curl -k https://localhost:port/filename --output filename\n")
     print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
 
 if __name__ == "__main__":
-
-    # the following will only be executed when this script
-    # isn't loaded as a module
     agreement = get_input("Do you want to install external pip-dependencies? Press y for yes: ", str)
     dependency_check()
+    if os.name != 'nt':
+    # the following will only be executed when this script
+    # isn't loaded as a module
 
-    print_network_info()
+        print_network_info()
 
-    srv_addr = get_input("Serveraddress to listen on: ", str)
-    port = get_input("Port to listen on: ", int)
+        srv_addr = get_input("Serveraddress to listen on: ", str)
+        port = get_input("Port to listen on: ", int)
 
-    os.system("openssl req -new -x509 -keyout '/tmp/server.key' -out '/tmp/server.pem' -days 365 -nodes -subj '/OU=Unknown/O=Unknown/L=Unknown/ST=unknown/C=AU'")
+        os.system("openssl req -new -x509 -keyout '/tmp/server.key' -out '/tmp/server.pem' -days 365 -nodes -subj '/OU=Unknown/O=Unknown/L=Unknown/ST=unknown/C=AU'")
     #set permissions with sticky bit for owner only
-    os.system("chmod 1700 /tmp/server.key /tmp/server.pem")
+        os.system("chmod 1700 /tmp/server.key /tmp/server.pem")
    
-    server_address = (srv_addr, port)
-    httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
-    httpd.socket = ssl.wrap_socket(
-        httpd.socket,
-        server_side=True,
-        keyfile='/tmp/server.key',
-        certfile='/tmp/server.pem',
-        ssl_version=ssl.PROTOCOL_TLS
-    )
+        server_address = (srv_addr, port)
+        httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
+        httpd.socket = ssl.wrap_socket(
+                httpd.socket,
+                server_side=True,
+                keyfile='/tmp/server.key',
+                certfile='/tmp/server.pem',
+                ssl_version=ssl.PROTOCOL_TLS
+                 )
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt as e:
+            print(str(e))
+            print("Stopping.")
+        os.system("rm /tmp/server.key /tmp/server.pem")
+        httpd.shutdown()
 
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt as e:
-        print(str(e))
-        print("Stopping.")
-    os.system("rm /tmp/server.key /tmp/server.pem")
-    httpd.shutdown()
+    else:
+        pass
