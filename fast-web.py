@@ -42,7 +42,7 @@ def print_network_info():
     print(f"WAN:\t{os.system('curl ipinfo.io ')}\n") 
     print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
     print("-> Extraction1: curl -k https://localhost:port/filename --output filename")
-    print("-> Extraction2: wget -r http://localhost:port/")
+    print("-> Extraction2: wget -r https://localhost:port/")
     print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
 
 if __name__ == "__main__":
