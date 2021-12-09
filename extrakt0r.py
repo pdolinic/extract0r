@@ -57,7 +57,7 @@ if __name__ == "__main__":
         srv_addr = get_input("Serveraddress to listen on: ", str)
         port = get_input("Port to listen on: ", int)
 
-        os.system("openssl req -new -x509 -keyout '/tmp/server.key' -out '/tmp/server.pem' -days 365 -nodes -subj '/OU=Unknown/O=Unknown/L=Unknown/ST=unknown/C=AU'")
+        os.system("openssl req -new -x509 -keyout '/tmp/server.key' -out '/tmp/server.pem' -days 365 -nodes -subj '/OU=%s/O=%s/L=%s/ST=%s/C=XO'" % ('srv_addr','srv_addr','srv_addr','srv_addr'))
     #set permissions with sticky bit for owner only
         os.system("chmod 1700 /tmp/server.key /tmp/server.pem")
    
