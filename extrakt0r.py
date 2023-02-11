@@ -25,35 +25,30 @@ def get_input(prompt:str, expected_type=str):
         except ValueError:
             pass
 
-def dependency_check():
-    if not "y" in agreement:
-       # print("Cancelling pip-depenencies")
-         return
-    else:
-         os.system("pip3 install ifaddr")
-         import ifaddr
-         adapters = ifaddr.get_adapters()
-         for adapter in adapters:
-             print("IPs of network adapter " + adapter.nice_name)
-             for ip in adapter.ips:
-                 print( "   %s/%s" % (ip.ip, ip.network_prefix))
+def adapter_ips():
+    print("--------------------------------------------------------------------------------------")
+    adapters= os.system("/sbin/ifconfig | awk '/^[a-z]/ { iface=$1 } /inet / { print iface, $2 }'")
+    print(adapters)
 
 def print_network_info():
+    print("--------------------------------------------------------------------------------------")
+    print("--------------------------------------------------------------------------------------")
     print(f"WAN:\t{os.system('curl ipinfo.io ')}\n") 
-    print("-> https://raw.githubusercontent.com/pdolinic/Purple/main/fast-web.py ")
+    print("--------------------------------------------------------------------------------------")
     print("-> Extraction1: curl -k https://localhost:port/filename --output filename")
     print("-> Extraction2: wget -r --no-check-certificate https://localhost:port/")
+    print("--------------------------------------------------------------------------------------")
+    print("     https://github.com/pdolinic/extrakt0r/blob/main/extrakt0r.py"    )
+    print("--------------------------------------------------------------------------------------")
+    print("--------------------------------------------------------------------------------------")
     print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
 
 if __name__ == "__main__":
-    agreement = get_input("Do you want to install external pip-dependencies? Press y for yes: ", str)
-    dependency_check()
     if os.name != 'nt':
     # the following will only be executed when this script
     # isn't loaded as a module
-
+        adapter_ips()
         print_network_info()
-
         srv_addr = get_input("Serveraddress to listen on: ", str)
         port = get_input("Port to listen on: ", int)
 
@@ -70,6 +65,7 @@ if __name__ == "__main__":
                 certfile='/tmp/server.pem',
                 ssl_version=ssl.PROTOCOL_TLS
                  )
+        httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         try:
             httpd.serve_forever()
         except KeyboardInterrupt as e:
