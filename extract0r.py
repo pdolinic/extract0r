@@ -63,22 +63,21 @@ def print_network_info():
     print("-> Extraction:    curl -k https://localhost:port/filename --output filename")          
     print("-> Extraction:    wget -r --no-check-certificate https://localhost:port/")
     print("---------------------------------------------------------------------------------------------------------")
-    print("-> Source:        https://raw.githubusercontent.com/pdolinic/extrakt0r/main/extrakt0r.py ")
+    print("-> Source:        https://raw.githubusercontent.com/pdolinic/extract0r/main/extract0r.py ")
     print("---------------------------------------------------------------------------------------------------------")
     print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
     print("---------------------------------------------------------------------------------------------------------")
 
 if __name__ == "__main__":
     if os.name != 'nt':
-    # the following will only be executed when this script
-    # isn't loaded as a module
+            
         adapter_ips()
         print_network_info()
         srv_addr = get_input("Serveraddress to listen on: ", str)
         port = get_input("Port to listen on: ", int)
 
         os.system("openssl req -new -x509 -keyout '/tmp/server.key' -out '/tmp/server.pem' -days 365 -nodes -subj '/OU=%s/O=%s/L=%s/ST=%s/C=XO'" % ('srv_addr','srv_addr','srv_addr','srv_addr'))
-    #set permissions with sticky bit for owner only
+        #set permissions with sticky bit for owner only
         os.system("chmod 1700 /tmp/server.key /tmp/server.pem")
    
         server_address = (srv_addr, port)
@@ -90,7 +89,9 @@ if __name__ == "__main__":
                 certfile='/tmp/server.pem',
                 ssl_version=ssl.PROTOCOL_TLS
                  )
-        httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        #httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            
         try:
             httpd.serve_forever()
         except KeyboardInterrupt as e:
@@ -98,6 +99,6 @@ if __name__ == "__main__":
             print("Stopping.")
         os.system("rm /tmp/server.key /tmp/server.pem")
         httpd.shutdown()
-
+            
     else:
         pass
