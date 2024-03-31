@@ -25,7 +25,7 @@ _/ __ \\  \/  /\   __\_  __ \__  \ _/ ___\   __\/  /_\  \_  __ \
  \___  >__/\_ \ |__|  |__|  (____  /\___  >__|   \_____  /__|   
      \/      \/                  \/     \/             \/       
       
-      """)
+""")
 
 def get_input(prompt:str, expected_type=str):
     while True:
@@ -51,40 +51,34 @@ def print_network_info():
     print("---------------------------------------------------------------------------------------------------------")
     print("-> Source:        https://raw.githubusercontent.com/pdolinic/extract0r/main/extract0r.py ")
     print("---------------------------------------------------------------------------------------------------------")
-    print("Warning: Potentially insecure - not suited for production - remember to stopp immediately after usage\n")
+    print("Warning: Potentially insecure - not suited for production - remember to stop immediately after usage\n")
     print("---------------------------------------------------------------------------------------------------------")
 
 if __name__ == "__main__":
     if os.name != 'nt':
-            
         adapter_ips()
         print_network_info()
         srv_addr = get_input("Serveraddress to listen on: ", str)
         port = get_input("Port to listen on: ", int)
 
         os.system("openssl req -new -x509 -keyout '/tmp/server.key' -out '/tmp/server.pem' -days 365 -nodes -subj '/OU=%s/O=%s/L=%s/ST=%s/C=XO'" % ('srv_addr','srv_addr','srv_addr','srv_addr'))
-        #set permissions with sticky bit for owner only
         os.system("chmod 1700 /tmp/server.key /tmp/server.pem")
    
         server_address = (srv_addr, port)
         httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
-        httpd.socket = ssl.wrap_socket(
-                httpd.socket,
-                server_side=True,
-                keyfile='/tmp/server.key',
-                certfile='/tmp/server.pem',
-                ssl_version=ssl.PROTOCOL_TLS
-                 )
 
-        #httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            
+        # Using SSLContext to replace the deprecated ssl.wrap_socket
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)  # or ssl.PROTOCOL_TLS for more compatibility
+        context.load_cert_chain('/tmp/server.pem', '/tmp/server.key')
+
+        httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+
         try:
             httpd.serve_forever()
-        except KeyboardInterrupt as e:
-            print(str(e))
+        except KeyboardInterrupt:
             print("Stopping.")
-        os.system("rm /tmp/server.key /tmp/server.pem")
-        httpd.shutdown()
-            
+        finally:
+            os.system("rm /tmp/server.key /tmp/server.pem")
+            httpd.server_close()
     else:
-        pass
+        print("This script is intended to run on Unix-like operating systems.")
